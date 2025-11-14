@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de acciones</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Historial de acciones (Pila)</h1>
+
+    <div class="menu-inline">
+        <a href="/" class="btn">Inicio</a>
+        <a href="/tareas" class="btn">Volver a tareas</a>
+    </div>
+
+    <hr>
+
+    <h2>Acciones registradas</h2>
+
+    <ul class="list">
+        <li th:each="accion : ${acciones}" th:text="${accion}"></li>
+
+        <li th:if="${acciones.length == 0}" class="empty">
+            La pila está vacía, no se han registrado acciones aún.
+        </li>
+    </ul>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Tareas</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Gestión de Tareas</h1>
+
+    <!-- BOTONES SUPERIORES -->
+    <div class="menu-inline">
+        <a href="/" class="btn">Inicio</a>
+        <a href="/tareas/ordenar" class="btn">Ordenar por Prioridad</a>
+        <a href="/tareas/historial" class="btn">Historial (Pila)</a>
+        <a href="/tareas/pendientes" class="btn">Pendientes (Cola)</a>
+    </div>
+
+    <hr>
+
+    <!-- FORMULARIO DE AGREGAR TAREA -->
+    <h2>Agregar nueva tarea</h2>
+
+    <form action="/tareas/agregar" method="post" class="form">
+        <input type="text" name="titulo" placeholder="Título" required />
+        <input type="text" name="descripcion" placeholder="Descripción" required />
+
+        <select name="prioridad" required>
+            <option value="" disabled selected>Prioridad</option>
+            <option value="Alta">Alta</option>
+            <option value="Media">Media</option>
+            <option value="Baja">Baja</option>
+        </select>
+
+        <select name="estado" required>
+            <option value="" disabled selected>Estado</option>
+            <option value="Pendiente">Pendiente</option>
+            <option value="En proceso">En proceso</option>
+            <option value="Completada">Completada</option>
+        </select>
+
+        <button type="submit" class="btn">Agregar</button>
+    </form>
+
+    <hr>
+
+    <!-- LISTA DE TAREAS -->
+    <h2>Tareas registradas</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="tarea : ${tareas}">
+            <td th:text="${tarea.id}"></td>
+            <td th:text="${tarea.titulo}"></td>
+            <td th:text="${tarea.descripcion}"></td>
+            <td th:text="${tarea.prioridad}"></td>
+            <td th:text="${tarea.estado}"></td>
+
+            <td>
+                <a th:href="@{'/tareas/eliminar/' + ${tarea.id}}" class="btn-del">Eliminar</a>
+            </td>
+        </tr>
+
+        <tr th:if="${tareas.length == 0}">
+            <td colspan="6" style="text-align:center; font-style: italic;">
+                No hay tareas registradas.
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

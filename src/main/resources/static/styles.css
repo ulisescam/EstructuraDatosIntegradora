@@ -1,0 +1,167 @@
+/* ============================
+   ESTILOS GENERALES
+============================ */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f4f4f7;
+}
+
+.container {
+    width: 90%;
+    max-width: 900px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+}
+
+/* ============================
+   TITULOS
+============================ */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333333;
+}
+
+h2 {
+    margin-top: 25px;
+    color: #444444;
+}
+
+/* ============================
+   BOTONES
+============================ */
+.btn,
+.btn-del {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 5px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+/* Botón normal */
+.btn {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.btn:hover {
+    background: #1e4fc4;
+}
+
+/* Botón eliminar */
+.btn-del {
+    background: #e11d48;
+    color: white;
+}
+
+.btn-del:hover {
+    background: #b8153a;
+}
+
+/* Menú horizontal */
+.menu-inline {
+    margin-bottom: 15px;
+}
+
+/* ============================
+   FORMULARIOS
+============================ */
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form input,
+.form select {
+    padding: 10px;
+    font-size: 14px;
+    width: calc(33% - 10px);
+    border-radius: 6px;
+    border: 1px solid #cccccc;
+}
+
+.form button {
+    width: 150px;
+}
+
+/* ============================
+   TABLAS
+============================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+thead {
+    background: #2563eb;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #dddddd;
+    text-align: center;
+}
+
+tr:hover {
+    background: #f1f5fb;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+    padding: 10px;
+}
+
+/* ============================
+   LISTAS
+============================ */
+.list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.list li {
+    background: #e7ecf8;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 5px;
+    border-left: 5px solid #2563eb;
+    font-size: 15px;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media (max-width: 680px) {
+
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .form input,
+    .form select {
+        width: 100%;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}

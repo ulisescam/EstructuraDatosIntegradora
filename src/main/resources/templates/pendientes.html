@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tareas Pendientes (Cola)</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>Tareas Pendientes (Cola FIFO)</h1>
+
+    <div class="menu-inline">
+        <a href="/" class="btn">Inicio</a>
+        <a href="/tareas" class="btn">Volver a tareas</a>
+    </div>
+
+    <hr>
+
+    <h2>Listado de tareas pendientes</h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Tarea</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="pendiente : ${pendientes}">
+            <td th:text="${pendiente}"></td>
+        </tr>
+
+        <tr th:if="${pendientes.length == 0}">
+            <td style="text-align:center; font-style:italic;">
+                No hay tareas en la cola de pendientes.
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

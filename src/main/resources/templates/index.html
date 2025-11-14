@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Gestión de Tareas</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Sistema de Gestión de Tareas</h1>
+    <p>Proyecto de estructuras de datos (listas, pilas, colas)</p>
+
+    <div class="menu">
+        <a href="/tareas" class="btn">Ver y gestionar tareas</a>
+        <a href="/tareas/historial" class="btn">Historial (Pila)</a>
+        <a href="/tareas/pendientes" class="btn">Tareas pendientes (Cola)</a>
+    </div>
+</div>
+
+</body>
+</html>
