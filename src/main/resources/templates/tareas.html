@@ -6,85 +6,92 @@
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
-
-<div class="container">
-
+<header>
     <h1>Gestión de Tareas</h1>
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/tareas}">Tareas</a>
+        <a th:href="@{/pendientes}">Pendientes (Cola)</a>
+        <a th:href="@{/historial}">Historial (Pila)</a>
+    </nav>
+</header>
 
-    <!-- BOTONES SUPERIORES -->
-    <div class="menu-inline">
-        <a href="/" class="btn">Inicio</a>
-        <a href="/tareas/ordenar" class="btn">Ordenar por Prioridad</a>
-        <a href="/tareas/historial" class="btn">Historial (Pila)</a>
-        <a href="/tareas/pendientes" class="btn">Pendientes (Cola)</a>
-    </div>
+<main>
+    <section>
+        <h2>Registrar nueva tarea</h2>
 
-    <hr>
+        <p th:if="${mensaje}" class="mensaje" th:text="${mensaje}"></p>
 
-    <!-- FORMULARIO DE AGREGAR TAREA -->
-    <h2>Agregar nueva tarea</h2>
+        <form th:action="@{/tareas/guardar}" th:object="${tarea}" method="post" class="formulario">
+            <div class="campo">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" th:field="*{titulo}" required>
+            </div>
 
-    <form action="/tareas/agregar" method="post" class="form">
-        <input type="text" name="titulo" placeholder="Título" required />
-        <input type="text" name="descripcion" placeholder="Descripción" required />
+            <div class="campo">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
+            </div>
 
-        <select name="prioridad" required>
-            <option value="" disabled selected>Prioridad</option>
-            <option value="Alta">Alta</option>
-            <option value="Media">Media</option>
-            <option value="Baja">Baja</option>
-        </select>
+            <div class="campo">
+                <label for="prioridad">Prioridad:</label>
+                <select id="prioridad" th:field="*{prioridad}">
+                    <option value="Alta">Alta</option>
+                    <option value="Media" selected>Media</option>
+                    <option value="Baja">Baja</option>
+                </select>
+            </div>
 
-        <select name="estado" required>
-            <option value="" disabled selected>Estado</option>
-            <option value="Pendiente">Pendiente</option>
-            <option value="En proceso">En proceso</option>
-            <option value="Completada">Completada</option>
-        </select>
+            <div class="campo">
+                <label for="fechaVencimiento">Fecha de vencimiento:</label>
+                <input type="date" id="fechaVencimiento" th:field="*{fechaVencimiento}">
+            </div>
 
-        <button type="submit" class="btn">Agregar</button>
-    </form>
+            <button type="submit">Guardar tarea</button>
+        </form>
+    </section>
 
-    <hr>
+    <section>
+        <h2>Listado general de tareas (Lista Simple)</h2>
 
-    <!-- LISTA DE TAREAS -->
-    <h2>Tareas registradas</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+                <th>Creación</th>
+                <th>Vencimiento</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${listaTareas}">
+                <td th:text="${t.id}">1</td>
+                <td th:text="${t.titulo}">Ejemplo</td>
+                <td th:text="${t.prioridad}">Media</td>
+                <td th:text="${t.estado}">Pendiente</td>
+                <td th:text="${t.fechaCreacion}">2025-01-01</td>
+                <td th:text="${t.fechaVencimiento}">2025-01-10</td>
+                <td>
+                    <a th:href="@{'/tareas/eliminar/' + ${t.id}}"
+                       class="boton-enlace"
+                       onclick="return confirm('¿Seguro que deseas eliminar esta tarea?');">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(listaTareas)}">
+                <td colspan="7">No hay tareas registradas.</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Descripción</th>
-            <th>Prioridad</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        <tr th:each="tarea : ${tareas}">
-            <td th:text="${tarea.id}"></td>
-            <td th:text="${tarea.titulo}"></td>
-            <td th:text="${tarea.descripcion}"></td>
-            <td th:text="${tarea.prioridad}"></td>
-            <td th:text="${tarea.estado}"></td>
-
-            <td>
-                <a th:href="@{'/tareas/eliminar/' + ${tarea.id}}" class="btn-del">Eliminar</a>
-            </td>
-        </tr>
-
-        <tr th:if="${tareas.length == 0}">
-            <td colspan="6" style="text-align:center; font-style: italic;">
-                No hay tareas registradas.
-            </td>
-        </tr>
-        </tbody>
-
-    </table>
-
-</div>
-
+<footer>
+    <p>Uso de Lista Simple: agregar, buscar, eliminar y mostrar tareas.</p>
+</footer>
 </body>
 </html>

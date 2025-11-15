@@ -1,30 +1,30 @@
 package com.example.EstructuraDatosIntegradora.model;
 
-public class Tarea implements Comparable<Tarea> {
+import org.springframework.format.annotation.DateTimeFormat;
+import java.time.LocalDate;
 
-    private int id;
+public class Tarea {
+
+    private long id;
     private String titulo;
     private String descripcion;
-    private String prioridad;  // Alta, Media, Baja
-    private String estado;     // Pendiente, En proceso, Completada
+    private String prioridad; // Alta, Media, Baja
+    private String estado;    // Pendiente, En progreso, Completada
 
-    public Tarea() {}
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fechaCreacion;
 
-    public Tarea(int id, String titulo, String descripcion, String prioridad, String estado) {
-        this.id = id;
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.prioridad = prioridad;
-        this.estado = estado;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fechaVencimiento;
+
+    public Tarea() {
     }
 
-    // ===== Getters y Setters =====
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -60,24 +60,19 @@ public class Tarea implements Comparable<Tarea> {
         this.estado = estado;
     }
 
-    // ===== CompareTo para ordenar por prioridad =====
-    @Override
-    public int compareTo(Tarea otra) {
-        // Orden de prioridad: Alta < Media < Baja
-        return prioridadValor(this.prioridad) - prioridadValor(otra.prioridad);
+    public LocalDate getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    private int prioridadValor(String p) {
-        return switch (p.toLowerCase()) {
-            case "alta" -> 1;
-            case "media" -> 2;
-            case "baja" -> 3;
-            default -> 99;
-        };
+    public void setFechaCreacion(LocalDate fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
     }
 
-    @Override
-    public String toString() {
-        return "[" + id + "] " + titulo + " (" + prioridad + ") - " + estado;
+    public LocalDate getFechaVencimiento() {
+        return fechaVencimiento;
+    }
+
+    public void setFechaVencimiento(LocalDate fechaVencimiento) {
+        this.fechaVencimiento = fechaVencimiento;
     }
 }

@@ -1,157 +1,103 @@
 package com.example.EstructuraDatosIntegradora.model.estructura;
 
-public class ListaSimple<T extends Comparable<T>> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListaSimple<T> {
 
     private Nodo<T> cabeza;
+    private int tamanio;
 
     public ListaSimple() {
-        cabeza = null;
+        this.cabeza = null;
+        this.tamanio = 0;
     }
 
-    // Agregar al inicio
-    public void agregarInicio(T dato) {
-        Nodo<T> nuevo = new Nodo<>(dato);
-        nuevo.setSiguiente(cabeza);
-        cabeza = nuevo;
+    public boolean estaVacia() {
+        return cabeza == null;
     }
 
-    // Agregar al final
-    public void agregarFinal(T dato) {
-        Nodo<T> nuevo = new Nodo<>(dato);
-        if (cabeza == null) {
+    /**
+     * Agrega un elemento al final de la lista.
+     */
+    public void agregar(T elemento) {
+        Nodo<T> nuevo = new Nodo<>(elemento);
+        if (estaVacia()) {
             cabeza = nuevo;
-            return;
+        } else {
+            Nodo<T> aux = cabeza;
+            while (aux.getSiguiente() != null) {
+                aux = aux.getSiguiente();
+            }
+            aux.setSiguiente(nuevo);
         }
-        Nodo<T> aux = cabeza;
-        while (aux.getSiguiente() != null) {
-            aux = aux.getSiguiente();
-        }
-        aux.setSiguiente(nuevo);
+        tamanio++;
     }
 
-    // Buscar por valor
-    public Nodo<T> buscar(T valor) {
+    /**
+     * Busca un elemento en la lista usando equals().
+     *
+     * @param elemento elemento a buscar
+     * @return el elemento encontrado o null si no existe
+     */
+    public T buscar(T elemento) {
         Nodo<T> aux = cabeza;
         while (aux != null) {
-            if (aux.getValor().equals(valor)) {
-                return aux;
+            if (aux.getDato().equals(elemento)) {
+                return aux.getDato();
             }
             aux = aux.getSiguiente();
         }
         return null;
     }
 
-    // Insertar antes de un valor
-    public void insertarAntes(T referencia, T nuevoDato) {
-        if (cabeza == null) return;
-
-        if (cabeza.getValor().equals(referencia)) {
-            agregarInicio(nuevoDato);
-            return;
+    /**
+     * Elimina la primera aparición del elemento en la lista.
+     *
+     * @param elemento elemento a eliminar
+     * @return true si se eliminó, false si no se encontró
+     */
+    public boolean eliminar(T elemento) {
+        if (estaVacia()) {
+            return false;
         }
 
-        Nodo<T> actual = cabeza;
-        while (actual.getSiguiente() != null &&
-                !actual.getSiguiente().getValor().equals(referencia)) {
-            actual = actual.getSiguiente();
-        }
-
-        if (actual.getSiguiente() != null) {
-            Nodo<T> nuevo = new Nodo<>(nuevoDato);
-            nuevo.setSiguiente(actual.getSiguiente());
-            actual.setSiguiente(nuevo);
-        }
-    }
-
-    // Insertar después de un valor
-    public void insertarDespues(T referencia, T nuevoDato) {
-        Nodo<T> nodoRef = buscar(referencia);
-        if (nodoRef != null) {
-            Nodo<T> nuevo = new Nodo<>(nuevoDato);
-            nuevo.setSiguiente(nodoRef.getSiguiente());
-            nodoRef.setSiguiente(nuevo);
-        }
-    }
-
-    // Eliminar un nodo
-    public void eliminar(T valor) {
-        if (cabeza == null) return;
-
-        if (cabeza.getValor().equals(valor)) {
+        // Caso: la cabeza es la que se elimina
+        if (cabeza.getDato().equals(elemento)) {
             cabeza = cabeza.getSiguiente();
-            return;
+            tamanio--;
+            return true;
         }
 
-        Nodo<T> actual = cabeza;
-        while (actual.getSiguiente() != null &&
-                !actual.getSiguiente().getValor().equals(valor)) {
-            actual = actual.getSiguiente();
-        }
-
-        if (actual.getSiguiente() != null) {
-            actual.setSiguiente(actual.getSiguiente().getSiguiente());
-        }
-    }
-
-    // Ordenar (burbuja)
-    public void ordenar() {
-        if (cabeza == null) return;
-
-        Nodo<T> actual = cabeza;
-        Nodo<T> siguiente;
-        T temp;
-
-        while (actual != null) {
-            siguiente = actual.getSiguiente();
-            while (siguiente != null) {
-                if (actual.getValor().compareTo(siguiente.getValor()) > 0) {
-                    temp = actual.getValor();
-                    actual.setValor(siguiente.getValor());
-                    siguiente.setValor(temp);
-                }
-                siguiente = siguiente.getSiguiente();
-            }
-            actual = actual.getSiguiente();
-        }
-    }
-
-    // Convertir la lista a un arreglo → útil para Thymeleaf
-    public T[] toArray() {
-        int size = tamaño();
-        T[] arr = (T[]) new Comparable[size];
         Nodo<T> aux = cabeza;
-        int index = 0;
-
-        while (aux != null) {
-            arr[index++] = aux.getValor();
+        while (aux.getSiguiente() != null &&
+                !aux.getSiguiente().getDato().equals(elemento)) {
             aux = aux.getSiguiente();
         }
-        return arr;
+
+        if (aux.getSiguiente() == null) {
+            return false; // no se encontró
+        }
+
+        aux.setSiguiente(aux.getSiguiente().getSiguiente());
+        tamanio--;
+        return true;
     }
 
-    // Tamaño de la lista
-    public int tamaño() {
-        int contador = 0;
+    /**
+     * Devuelve todos los elementos de la lista en un List de Java.
+     */
+    public List<T> obtenerTodos() {
+        List<T> elementos = new ArrayList<>();
         Nodo<T> aux = cabeza;
         while (aux != null) {
-            contador++;
+            elementos.add(aux.getDato());
             aux = aux.getSiguiente();
         }
-        return contador;
+        return elementos;
     }
 
-    // Mostrar por consola (para pruebas)
-    public void mostrar() {
-        Nodo<T> aux = cabeza;
-        while (aux != null) {
-            System.out.print(aux.getValor() + " -> ");
-            aux = aux.getSiguiente();
-        }
-        System.out.println("null");
-    }
-
-    // Obtener cabeza (si se necesita recorrer)
-    public Nodo<T> getCabeza() {
-        return cabeza;
+    public int getTamanio() {
+        return tamanio;
     }
 }

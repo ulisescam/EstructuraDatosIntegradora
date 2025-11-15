@@ -1,20 +1,20 @@
 package com.example.EstructuraDatosIntegradora.model.estructura;
 
 public class Nodo<T> {
-    protected T dato;
-    protected Nodo<T> siguiente;
+    private T dato;
+    private Nodo<T> siguiente;
 
-    public Nodo(T valor) {
-        this.dato = valor;
+    public Nodo(T dato) {
+        this.dato = dato;
         this.siguiente = null;
     }
 
-    public T getValor() {
+    public T getDato() {
         return dato;
     }
 
-    public void setValor(T valor) {
-        this.dato = valor;
+    public void setDato(T dato) {
+        this.dato = dato;
     }
 
     public Nodo<T> getSiguiente() {

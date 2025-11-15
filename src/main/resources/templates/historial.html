@@ -1,34 +1,53 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Historial de acciones</title>
+    <title>Historial de Tareas (Pila)</title>
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
+<header>
+    <h1>Historial de Tareas (Pila LIFO)</h1>
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/tareas}">Tareas</a>
+        <a th:href="@{/pendientes}">Pendientes (Cola)</a>
+        <a th:href="@{/historial}">Historial (Pila)</a>
+    </nav>
+</header>
 
-<div class="container">
+<main>
+    <section>
+        <h2>Movimientos registrados</h2>
 
-    <h1>Historial de acciones (Pila)</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Orden en pila</th>
+                <th>ID Tarea</th>
+                <th>Título</th>
+                <th>Prioridad</th>
+                <th>Estado</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t, iterStat : ${historial}">
+                <td th:text="${iterStat.index + 1}">1</td>
+                <td th:text="${t.id}">1</td>
+                <td th:text="${t.titulo}">Ejemplo</td>
+                <td th:text="${t.prioridad}">Media</td>
+                <td th:text="${t.estado}">Pendiente</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(historial)}">
+                <td colspan="5">Aún no hay movimientos en el historial.</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
 
-    <div class="menu-inline">
-        <a href="/" class="btn">Inicio</a>
-        <a href="/tareas" class="btn">Volver a tareas</a>
-    </div>
-
-    <hr>
-
-    <h2>Acciones registradas</h2>
-
-    <ul class="list">
-        <li th:each="accion : ${acciones}" th:text="${accion}"></li>
-
-        <li th:if="${acciones.length == 0}" class="empty">
-            La pila está vacía, no se han registrado acciones aún.
-        </li>
-    </ul>
-
-</div>
-
+<footer>
+    <p>Uso de Pila: se visualiza primero la última tarea registrada.</p>
+</footer>
 </body>
 </html>

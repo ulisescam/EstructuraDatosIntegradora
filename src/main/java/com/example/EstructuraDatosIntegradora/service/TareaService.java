@@ -1,54 +1,65 @@
 package com.example.EstructuraDatosIntegradora.service;
 
 import com.example.EstructuraDatosIntegradora.model.Tarea;
-import com.example.EstructuraDatosIntegradora.model.estructura.ListaSimple;
-import com.example.EstructuraDatosIntegradora.model.estructura.Pila;
 import com.example.EstructuraDatosIntegradora.model.estructura.Cola;
+import com.example.EstructuraDatosIntegradora.model.estructura.ListaSimple;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
 
 @Service
 public class TareaService {
 
     private final ListaSimple<Tarea> listaTareas = new ListaSimple<>();
-    private final Pila<String> historial = new Pila<>();
     private final Cola<Tarea> colaPendientes = new Cola<>();
+    private long contadorId = 1;
 
-    private int contadorId = 1; // Generador simple de IDs
+    private final HistorialService historialService;
 
-    // =======================
-    //     CRUD PRINCIPAL
-    // =======================
+    public TareaService(HistorialService historialService) {
+        this.historialService = historialService;
+    }
 
-    // Agregar tarea
-    public void agregarTarea(Tarea tarea) {
+    /**
+     * Crea una nueva tarea con los datos del formulario
+     * y la registra en las estructuras correspondientes.
+     */
+    public Tarea crearTarea(Tarea datosFormulario) {
+        Tarea tarea = new Tarea();
         tarea.setId(contadorId++);
-        listaTareas.agregarFinal(tarea);
+        tarea.setTitulo(datosFormulario.getTitulo());
+        tarea.setDescripcion(datosFormulario.getDescripcion());
+        tarea.setPrioridad(datosFormulario.getPrioridad());
+        tarea.setEstado("Pendiente");
+        tarea.setFechaCreacion(LocalDate.now());
+        tarea.setFechaVencimiento(datosFormulario.getFechaVencimiento());
 
-        historial.insertar("Agregada tarea: " + tarea.getTitulo());
+        // Lista general (lista simplemente enlazada genérica)
+        listaTareas.agregar(tarea);
 
-        if (tarea.getEstado().equalsIgnoreCase("Pendiente")) {
-            colaPendientes.agregarElementos(tarea);
-        }
+        // Cola de pendientes (FIFO)
+        colaPendientes.encolar(tarea);
+
+        // Historial (pila genérica)
+        historialService.registrarAccion(tarea);
+
+        return tarea;
     }
 
-    // Obtener todas las tareas como arreglo (para Thymeleaf)
-    public Tarea[] obtenerTareas() {
-        return listaTareas.toArray();
+    /**
+     * Devuelve todas las tareas almacenadas en la lista.
+     */
+    public List<Tarea> listarTareas() {
+        return listaTareas.obtenerTodos();
     }
 
-    // Eliminar tarea por ID
-    public void eliminarTarea(int id) {
-        Tarea objetivo = buscarPorId(id);
-        if (objetivo != null) {
-            listaTareas.eliminar(objetivo);
-
-            historial.insertar("Eliminada tarea: " + objetivo.getTitulo());
-        }
-    }
-
-    // Buscar tarea por ID (para edición o eliminación)
-    public Tarea buscarPorId(int id) {
-        for (Tarea t : obtenerTareas()) {
+    /**
+     * Busca una tarea por su id recorriendo la lista genérica.
+     */
+    public Tarea buscarPorId(long id) {
+        for (Tarea t : listaTareas.obtenerTodos()) {
             if (t.getId() == id) {
                 return t;
             }
@@ -56,40 +67,41 @@ public class TareaService {
         return null;
     }
 
-    // Actualizar tarea
-    public void actualizarTarea(Tarea tareaActualizada) {
-        Tarea original = buscarPorId(tareaActualizada.getId());
-        if (original != null) {
-            original.setTitulo(tareaActualizada.getTitulo());
-            original.setDescripcion(tareaActualizada.getDescripcion());
-            original.setPrioridad(tareaActualizada.getPrioridad());
-            original.setEstado(tareaActualizada.getEstado());
-
-            historial.insertar("Actualizada tarea: " + original.getTitulo());
+    /**
+     * Elimina una tarea por id de la lista principal y la registra en el historial.
+     */
+    public boolean eliminarTarea(long id) {
+        Tarea tarea = buscarPorId(id);
+        if (tarea == null) {
+            return false;
         }
+
+        boolean eliminado = listaTareas.eliminar(tarea);
+        if (eliminado) {
+            historialService.registrarAccion(tarea);
+        }
+        return eliminado;
     }
 
-    // Ordenar lista por prioridad
-    public void ordenarPorPrioridad() {
-        listaTareas.ordenar();
-        historial.insertar("Lista ordenada por prioridad");
+    /**
+     * Devuelve la lista de tareas que están en la cola de pendientes.
+     */
+    public List<Tarea> obtenerPendientes() {
+        return colaPendientes.obtenerElementos();
     }
 
-
-    // =======================
-    //      COLA DE PENDIENTES
-    // =======================
-
-    public Tarea[] obtenerPendientes() {
-        return colaPendientes.toArray();
-    }
-
-
-    // =======================
-    //        HISTORIAL
-    // =======================
-
-    public String[] obtenerHistorial() {
-        return historial.toArray();
+    /**
+     * Procesa la siguiente tarea de la cola:
+     *  - Se desencola.
+     *  - Se marca como completada.
+     *  - Se registra en el historial.
+     */
+    public Tarea procesarSiguientePendiente() {
+        Tarea tarea = colaPendientes.desencolar();
+        if (tarea != null) {
+            tarea.setEstado("Completada");
+            historialService.registrarAccion(tarea);
+        }
+        return tarea;
     }
 }

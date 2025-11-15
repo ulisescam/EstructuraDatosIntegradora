@@ -1,103 +1,82 @@
 package com.example.EstructuraDatosIntegradora.model.estructura;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class Cola<T> {
+
     private Nodo<T> inicio;
     private Nodo<T> fin;
-    private int size;
+    private int tamanio;
 
-    // Constructor: crear cola vacía
     public Cola() {
-        inicio = null;
-        fin = null;
-        size = 0;
+        this.inicio = null;
+        this.fin = null;
+        this.tamanio = 0;
     }
 
-    // Verificar si la cola está vacía
-    public boolean isVacia() {
+    public boolean estaVacia() {
         return inicio == null;
     }
 
-    // Agregar elementos al final
-    public void agregarElementos(T elemento) {
+    /**
+     * Encola un elemento al final de la cola.
+     */
+    public void encolar(T elemento) {
         Nodo<T> nuevo = new Nodo<>(elemento);
-
-        if (isVacia()) {
+        if (estaVacia()) {
             inicio = nuevo;
+            fin = nuevo;
         } else {
             fin.setSiguiente(nuevo);
+            fin = nuevo;
         }
-
-        fin = nuevo;
-        size++;
+        tamanio++;
     }
 
-    // Quitar elemento: elimina y retorna el dato del inicio
-    public T quitarElemento() {
-        if (isVacia()) {
-            System.out.println("No hay elementos");
+    /**
+     * Desencola el elemento del inicio de la cola.
+     */
+    public T desencolar() {
+        if (estaVacia()) {
+            System.out.println("La cola está vacía.");
             return null;
         }
-
-        T aux = inicio.getValor();
+        T dato = inicio.getDato();
         inicio = inicio.getSiguiente();
-        size--;
-
-        // Si la cola queda vacía, reiniciar fin también
         if (inicio == null) {
             fin = null;
         }
-
-        return aux;
+        tamanio--;
+        return dato;
     }
 
-    // Ver inicio sin eliminar
-    public T verInicio() {
-        if (isVacia()) {
-            System.out.println("No hay elementos");
+    /**
+     * Devuelve el elemento del frente sin desencolarlo.
+     */
+    public T verFrente() {
+        if (estaVacia()) {
             return null;
         }
-        return inicio.getValor();
+        return inicio.getDato();
     }
 
-    // Mostrar todos los elementos
-    public void mostrarElementos() {
-        if (isVacia()) {
-            System.out.println("NO hay elementos");
-            return;
+    /**
+     * Devuelve todos los elementos de la cola en una lista.
+     * El primer elemento de la lista corresponde al inicio de la cola.
+     */
+    public List<T> obtenerElementos() {
+        List<T> elementos = new ArrayList<>();
+        Nodo<T> aux = inicio;
+        while (aux != null) {
+            elementos.add(aux.getDato());
+            aux = aux.getSiguiente();
         }
-
-        Nodo<T> actual = inicio;
-        System.out.print("Elementos: ");
-        while (actual != null) {
-            System.out.print(actual.getValor() + " ");
-            actual = actual.getSiguiente();
-        }
-        System.out.println();
+        return elementos;
     }
 
-    // Borrar todos
-    public void borrarElementos() {
-        inicio = null;
-        fin = null;
-        size = 0;
-    }
-
-    // Metodo tamaño
-    public int tamanoCola() {
-        return size;
-    }
-
-    // 👇 Importante para mostrar en Thymeleaf
-    public String[] toArray() {
-        String[] arr = new String[size];
-        Nodo<T> actual = inicio;
-        int index = 0;
-
-        while (actual != null) {
-            arr[index++] = actual.getValor().toString();
-            actual = actual.getSiguiente();
-        }
-
-        return arr;
+    public int getTamanio() {
+        return tamanio;
     }
 }

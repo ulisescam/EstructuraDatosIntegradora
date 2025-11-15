@@ -9,5 +9,4 @@ public class EstructuraDatosIntegradoraApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EstructuraDatosIntegradoraApplication.class, args);
 	}
-
 }

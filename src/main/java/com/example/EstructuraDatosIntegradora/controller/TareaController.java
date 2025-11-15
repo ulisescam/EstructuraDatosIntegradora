@@ -1,89 +1,97 @@
 package com.example.EstructuraDatosIntegradora.controller;
 
 import com.example.EstructuraDatosIntegradora.model.Tarea;
+import com.example.EstructuraDatosIntegradora.service.HistorialService;
 import com.example.EstructuraDatosIntegradora.service.TareaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * Controlador encargado de manejar las vistas relacionadas con las tareas,
+ * los pendientes (cola) y el historial (pila).
+ */
 @Controller
-@RequestMapping("/tareas")
 public class TareaController {
 
     private final TareaService tareaService;
+    private final HistorialService historialService;
 
-    public TareaController(TareaService tareaService) {
+    public TareaController(TareaService tareaService, HistorialService historialService) {
         this.tareaService = tareaService;
+        this.historialService = historialService;
     }
 
-    // =====================================================
-    //                  MOSTRAR TODAS LAS TAREAS
-    // =====================================================
-    @GetMapping
-    public String mostrarTareas(Model model) {
-        model.addAttribute("tareas", tareaService.obtenerTareas());
-        model.addAttribute("nuevaTarea", new Tarea()); // Para formulario
+    /**
+     * Vista principal de tareas: muestra el formulario y la lista general.
+     */
+    @GetMapping("/tareas")
+    public String verTareas(Model model, @ModelAttribute("mensaje") String mensaje) {
+        model.addAttribute("tarea", new Tarea());
+        model.addAttribute("listaTareas", tareaService.listarTareas());
+        model.addAttribute("mensaje", mensaje);
         return "tareas";
     }
 
-    // =====================================================
-    //                     AGREGAR TAREA
-    // =====================================================
-    @PostMapping("/agregar")
-    public String agregarTarea(@ModelAttribute Tarea nueva) {
-        tareaService.agregarTarea(nueva);
+    /**
+     * Recibe los datos del formulario y crea una nueva tarea.
+     */
+    @PostMapping("/tareas/guardar")
+    public String guardarTarea(@ModelAttribute("tarea") Tarea tareaFormulario,
+                               RedirectAttributes redirectAttributes) {
+        tareaService.crearTarea(tareaFormulario);
+        redirectAttributes.addFlashAttribute("mensaje", "Tarea registrada correctamente.");
         return "redirect:/tareas";
     }
 
-    // =====================================================
-    //                     ELIMINAR TAREA
-    // =====================================================
-    @GetMapping("/eliminar/{id}")
-    public String eliminarTarea(@PathVariable int id) {
-        tareaService.eliminarTarea(id);
+    /**
+     * Elimina una tarea por id.
+     */
+    @GetMapping("/tareas/eliminar/{id}")
+    public String eliminarTarea(@PathVariable("id") long id,
+                                RedirectAttributes redirectAttributes) {
+        boolean eliminado = tareaService.eliminarTarea(id);
+        if (eliminado) {
+            redirectAttributes.addFlashAttribute("mensaje", "Tarea eliminada correctamente.");
+        } else {
+            redirectAttributes.addFlashAttribute("mensaje", "La tarea no existe.");
+        }
         return "redirect:/tareas";
     }
 
-    // =====================================================
-    //                   ORDENAR LISTA POR PRIORIDAD
-    // =====================================================
-    @GetMapping("/ordenar")
-    public String ordenar() {
-        tareaService.ordenarPorPrioridad();
-        return "redirect:/tareas";
-    }
-
-    // =====================================================
-    //                       EDITAR TAREA
-    // =====================================================
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable int id, Model model) {
-        Tarea tarea = tareaService.buscarPorId(id);
-        model.addAttribute("tareaEditar", tarea);
-        return "editar"; // crearemos editar.html si quieres edición real
-    }
-
-    @PostMapping("/actualizar")
-    public String actualizar(@ModelAttribute Tarea tarea) {
-        tareaService.actualizarTarea(tarea);
-        return "redirect:/tareas";
-    }
-
-    // =====================================================
-    //                    VER HISTORIAL (PILA)
-    // =====================================================
-    @GetMapping("/historial")
-    public String historial(Model model) {
-        model.addAttribute("acciones", tareaService.obtenerHistorial());
-        return "historial";
-    }
-
-    // =====================================================
-    //               VER TAREAS PENDIENTES (COLA)
-    // =====================================================
+    /**
+     * Muestra las tareas que están en la cola de pendientes.
+     */
     @GetMapping("/pendientes")
-    public String pendientes(Model model) {
+    public String verPendientes(Model model, @ModelAttribute("mensaje") String mensaje) {
         model.addAttribute("pendientes", tareaService.obtenerPendientes());
-        return "pendientes"; // si quieres, te hago pendientes.html
+        model.addAttribute("mensaje", mensaje);
+        return "pendientes";
+    }
+
+    /**
+     * Procesa la siguiente tarea en la cola de pendientes.
+     */
+    @PostMapping("/pendientes/procesar")
+    public String procesarSiguientePendiente(RedirectAttributes redirectAttributes) {
+        Tarea procesada = tareaService.procesarSiguientePendiente();
+        if (procesada != null) {
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Se procesó la tarea: " + procesada.getTitulo());
+        } else {
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "No hay tareas en la cola de pendientes.");
+        }
+        return "redirect:/pendientes";
+    }
+
+    /**
+     * Muestra el historial de tareas usando la pila.
+     */
+    @GetMapping("/historial")
+    public String verHistorial(Model model) {
+        model.addAttribute("historial", historialService.obtenerHistorial());
+        return "historial";
     }
 }

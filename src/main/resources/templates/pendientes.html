@@ -1,48 +1,61 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Tareas Pendientes (Cola)</title>
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
-
-<div class="container">
-
+<header>
     <h1>Tareas Pendientes (Cola FIFO)</h1>
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/tareas}">Tareas</a>
+        <a th:href="@{/pendientes}">Pendientes (Cola)</a>
+        <a th:href="@{/historial}">Historial (Pila)</a>
+    </nav>
+</header>
 
-    <div class="menu-inline">
-        <a href="/" class="btn">Inicio</a>
-        <a href="/tareas" class="btn">Volver a tareas</a>
-    </div>
+<main>
+    <section>
+        <p th:if="${mensaje}" class="mensaje" th:text="${mensaje}"></p>
 
-    <hr>
+        <form th:action="@{/pendientes/procesar}" method="post">
+            <button type="submit">Procesar siguiente tarea</button>
+        </form>
+    </section>
 
-    <h2>Listado de tareas pendientes</h2>
+    <section>
+        <h2>Tareas en la cola de pendientes</h2>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Tarea</th>
-        </tr>
-        </thead>
+        <table>
+            <thead>
+            <tr>
+                <th>Posición</th>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Prioridad</th>
+                <th>Estado actual</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t, iterStat : ${pendientes}">
+                <td th:text="${iterStat.index + 1}">1</td>
+                <td th:text="${t.id}">1</td>
+                <td th:text="${t.titulo}">Ejemplo</td>
+                <td th:text="${t.prioridad}">Alta</td>
+                <td th:text="${t.estado}">Pendiente</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(pendientes)}">
+                <td colspan="5">No hay tareas pendientes en la cola.</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
 
-        <tbody>
-
-        <tr th:each="pendiente : ${pendientes}">
-            <td th:text="${pendiente}"></td>
-        </tr>
-
-        <tr th:if="${pendientes.length == 0}">
-            <td style="text-align:center; font-style:italic;">
-                No hay tareas en la cola de pendientes.
-            </td>
-        </tr>
-
-        </tbody>
-    </table>
-
-</div>
-
+<footer>
+    <p>Uso de Cola: las tareas se atienden en el mismo orden en que fueron agregadas.</p>
+</footer>
 </body>
 </html>

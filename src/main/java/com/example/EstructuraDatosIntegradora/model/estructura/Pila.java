@@ -1,75 +1,71 @@
 package com.example.EstructuraDatosIntegradora.model.estructura;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Pila<T> {
-    private Nodo<T> cima;
-    private int size;
+
+    private Nodo<T> tope;
+    private int tamanio;
 
     public Pila() {
-        this.cima = null;
-        this.size = 0;
+        this.tope = null;
+        this.tamanio = 0;
     }
 
-    public void insertar(T valor) {
-        Nodo<T> nuevo = new Nodo<>(valor);
-        nuevo.setSiguiente(cima);
-        cima = nuevo;
-        size++;
+    public boolean estaVacia() {
+        return tope == null;
     }
 
-    public boolean pilaVacia() {
-        return cima == null;
+    /**
+     * Apila un elemento en el tope de la pila.
+     */
+    public void apilar(T elemento) {
+        Nodo<T> nuevo = new Nodo<>(elemento);
+        nuevo.setSiguiente(tope);
+        tope = nuevo;
+        tamanio++;
     }
 
-    public T quitar() { // pop
-        if (pilaVacia()) {
-            System.out.println("La pila está vacía");
+    /**
+     * Desapila el elemento del tope y lo devuelve.
+     */
+    public T desapilar() {
+        if (estaVacia()) {
+            System.out.println("La pila está vacía.");
             return null;
         }
-        T aux = cima.getValor();
-        cima = cima.getSiguiente();
-        size--;
-        return aux;
+        T dato = tope.getDato();
+        tope = tope.getSiguiente();
+        tamanio--;
+        return dato;
     }
 
-    public T verCima() { // peek
-        if (pilaVacia()) {
-            System.out.println("Pila vacía");
+    /**
+     * Devuelve el elemento del tope sin eliminarlo.
+     */
+    public T verTope() {
+        if (estaVacia()) {
             return null;
         }
-        return cima.getValor();
+        return tope.getDato();
     }
 
-    public void limpiarPila() {
-        cima = null;
-        size = 0;
-        System.out.println("La pila fue limpiada");
-    }
-
-    public int tamanioPila() {
-        return size;
-    }
-
-    public void mostrarPila() {
-        if (pilaVacia()) {
-            System.out.println("La pila está vacía");
-            return;
-        }
-        Nodo<T> aux = cima;
+    /**
+     * Devuelve todos los elementos de la pila en una lista.
+     * El primer elemento de la lista corresponde al tope de la pila.
+     */
+    public List<T> obtenerElementos() {
+        List<T> elementos = new ArrayList<>();
+        Nodo<T> aux = tope;
         while (aux != null) {
-            System.out.println(aux.getValor() + " ");
+            elementos.add(aux.getDato());
             aux = aux.getSiguiente();
         }
+        return elementos;
     }
 
-    public String[] toArray() {
-        String[] arr = new String[size];
-        Nodo<T> aux = cima;
-        int index = 0;
-
-        while (aux != null) {
-            arr[index++] = aux.getValor().toString();
-            aux = aux.getSiguiente();
-        }
-        return arr;
+    public int getTamanio() {
+        return tamanio;
     }
 }

@@ -6,17 +6,50 @@
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
-
-<div class="container">
+<header>
     <h1>Sistema de Gestión de Tareas</h1>
-    <p>Proyecto de estructuras de datos (listas, pilas, colas)</p>
+    <nav>
+        <a th:href="@{/}">Inicio</a>
+        <a th:href="@{/tareas}">Tareas</a>
+        <a th:href="@{/pendientes}">Pendientes (Cola)</a>
+        <a th:href="@{/historial}">Historial (Pila)</a>
+    </nav>
+</header>
 
-    <div class="menu">
-        <a href="/tareas" class="btn">Ver y gestionar tareas</a>
-        <a href="/tareas/historial" class="btn">Historial (Pila)</a>
-        <a href="/tareas/pendientes" class="btn">Tareas pendientes (Cola)</a>
-    </div>
-</div>
+<main>
+    <section class="tarjetas-resumen">
+        <div class="tarjeta">
+            <h2>Total de tareas</h2>
+            <p th:text="${totalTareas}">0</p>
+        </div>
 
+        <div class="tarjeta">
+            <h2>Tareas en cola de pendientes</h2>
+            <p th:text="${tareasPendientes}">0</p>
+        </div>
+
+        <div class="tarjeta">
+            <h2>Último movimiento en historial</h2>
+            <p th:if="${ultimoMovimiento != null}"
+               th:text="${ultimoMovimiento.titulo}">Sin movimientos aún</p>
+            <p th:if="${ultimoMovimiento == null}">Sin movimientos aún</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Descripción del sistema</h2>
+        <p>
+            Esta aplicación web permite agregar, organizar y completar tareas personales o
+            laborales. Internamente utiliza estructuras de datos básicas:
+            una lista simplemente enlazada para el almacenamiento general,
+            una pila para el historial de acciones y una cola para administrar
+            las tareas pendientes en orden de llegada.
+        </p>
+    </section>
+</main>
+
+<footer>
+    <p>Proyecto de Estructuras de Datos &mdash; Tarea Integradora</p>
+</footer>
 </body>
 </html>
