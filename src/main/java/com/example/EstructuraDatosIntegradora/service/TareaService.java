@@ -1,6 +1,7 @@
 package com.example.EstructuraDatosIntegradora.service;
 
 import com.example.EstructuraDatosIntegradora.model.Tarea;
+import com.example.EstructuraDatosIntegradora.model.estructura.ArbolBinario;
 import com.example.EstructuraDatosIntegradora.model.estructura.Cola;
 import com.example.EstructuraDatosIntegradora.model.estructura.ListaSimple;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,14 @@ public class TareaService {
     private final ListaSimple<Tarea> listaTareas = new ListaSimple<>();
     private final Cola<Tarea> colaPendientes = new Cola<>();
     private long contadorId = 1;
+    private final ArbolBinario<Tarea> arbolPrioridad =
+            new ArbolBinario<>(t -> {
+                return switch (t.getPrioridad()) {
+                    case "Alta" -> 1;
+                    case "Media" -> 2;
+                    default -> 3;
+                };
+            });
 
     private final HistorialService historialService;
 
@@ -44,6 +53,8 @@ public class TareaService {
 
         // Historial (pila genérica)
         historialService.registrarAccion(tarea);
+
+        arbolPrioridad.insertar(tarea);
 
         return tarea;
     }
@@ -104,4 +115,9 @@ public class TareaService {
         }
         return tarea;
     }
+
+    public List<Tarea> obtenerArbolPorPrioridad() {
+        return arbolPrioridad.recorridoInorden();
+    }
+
 }

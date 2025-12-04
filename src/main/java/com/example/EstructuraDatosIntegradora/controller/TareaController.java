@@ -94,4 +94,11 @@ public class TareaController {
         model.addAttribute("historial", historialService.obtenerHistorial());
         return "historial";
     }
+
+    @GetMapping("/arbol")
+    public String mostrarArbol(Model model) {
+        model.addAttribute("listaArbol", tareaService.obtenerArbolPorPrioridad());
+        return "arbol";
+    }
+
 }

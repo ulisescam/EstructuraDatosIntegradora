@@ -13,6 +13,7 @@
         <a th:href="@{/tareas}">Tareas</a>
         <a th:href="@{/pendientes}">Pendientes (Cola)</a>
         <a th:href="@{/historial}">Historial (Pila)</a>
+        <a th:href="@{/arbol}">Árbol (Prioridad)</a>
     </nav>
 </header>
 
@@ -30,12 +31,12 @@
 
             <div class="campo">
                 <label for="descripcion">Descripción:</label>
-                <textarea id="descripcion" th:field="*{descripcion}" rows="3"></textarea>
+                <textarea id="descripcion" th:field="*{descripcion}" rows="3" required></textarea>
             </div>
 
             <div class="campo">
                 <label for="prioridad">Prioridad:</label>
-                <select id="prioridad" th:field="*{prioridad}">
+                <select id="prioridad" th:field="*{prioridad}" required>
                     <option value="Alta">Alta</option>
                     <option value="Media" selected>Media</option>
                     <option value="Baja">Baja</option>
@@ -44,7 +45,7 @@
 
             <div class="campo">
                 <label for="fechaVencimiento">Fecha de vencimiento:</label>
-                <input type="date" id="fechaVencimiento" th:field="*{fechaVencimiento}">
+                <input type="date" id="fechaVencimiento" th:field="*{fechaVencimiento}" required>
             </div>
 
             <button type="submit">Guardar tarea</button>

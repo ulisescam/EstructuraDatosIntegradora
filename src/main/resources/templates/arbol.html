@@ -2,12 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Tareas Pendientes (Cola)</title>
+    <title>Árbol Binario de Prioridad</title>
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
+
 <body>
+
 <header>
-    <h1>Tareas Pendientes (Cola FIFO)</h1>
+    <h1>Sistema de Gestión de Tareas</h1>
     <nav>
         <a th:href="@{/}">Inicio</a>
         <a th:href="@{/tareas}">Tareas</a>
@@ -18,45 +20,52 @@
 </header>
 
 <main>
-    <section>
-        <p th:if="${mensaje}" class="mensaje" th:text="${mensaje}"></p>
 
-        <form th:action="@{/pendientes/procesar}" method="post">
-            <button type="submit">Procesar siguiente tarea</button>
-        </form>
+    <!-- Título principal -->
+    <section>
+        <h2>Árbol Binario de Prioridad</h2>
+        <p>
+            El siguiente listado muestra las tareas ordenadas automáticamente según su prioridad
+            utilizando un árbol binario.
+        </p>
     </section>
 
+    <!-- Tabla de tareas dentro del árbol -->
     <section>
-        <h2>Tareas en la cola de pendientes</h2>
+        <h3>Listado ordenado por prioridad </h3>
 
         <table>
             <thead>
             <tr>
-                <th>Posición</th>
                 <th>ID</th>
                 <th>Título</th>
                 <th>Prioridad</th>
-                <th>Estado actual</th>
+                <th>Estado</th>
+                <th>Fecha de creación</th>
             </tr>
             </thead>
+
             <tbody>
-            <tr th:each="t, iterStat : ${pendientes}">
-                <td th:text="${iterStat.index + 1}">1</td>
+            <tr th:each="t : ${listaArbol}">
                 <td th:text="${t.id}">1</td>
-                <td th:text="${t.titulo}">Ejemplo</td>
+                <td th:text="${t.titulo}">Título ejemplo</td>
                 <td th:text="${t.prioridad}">Alta</td>
                 <td th:text="${t.estado}">Pendiente</td>
+                <td th:text="${t.fechaCreacion}">2025-01-01</td>
             </tr>
-            <tr th:if="${#lists.isEmpty(pendientes)}">
-                <td colspan="5">No hay tareas pendientes en la cola.</td>
+
+            <tr th:if="${#lists.isEmpty(listaArbol)}">
+                <td colspan="5">Aún no hay tareas insertadas en el árbol.</td>
             </tr>
             </tbody>
         </table>
     </section>
+
 </main>
 
 <footer>
-    <p>Uso de Cola: las tareas se atienden en el mismo orden en que fueron agregadas.</p>
+    <p>Proyecto de Estructuras de Datos — Árbol Binario de Prioridad</p>
 </footer>
+
 </body>
 </html>
